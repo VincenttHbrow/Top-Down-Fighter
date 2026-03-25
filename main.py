@@ -3,34 +3,41 @@ from settings import *
 import mapsys
 import camera
 import math as m
+import player
 
 
+"""
+Main game file. Contains main update loop.
+Run this to play.
+"""
+
+# Crucial pygame initialisations
 pygame.init()
 screen = pygame.display.set_mode(RESOLUTION)
 clock = pygame.time.Clock()
-cameradir = 0
-playerpos = 0,0
-
 run = True
-maphandler = mapsys.Map()
-maphandler.load('testmap')
 
+# Creating classes
+player = player.Player()
+maphandler = mapsys.Maphandler()
+
+# Temp stuff, testing/demo purposes. Will find better systems to handle.
+maphandler.load('testmap')
+player.pos = 2,2
+
+
+# Main loop
 while run:
+    # Standard pygame update stuff
     clock.tick(FPS)
     screen.fill((0,0,0))
 
-    camera.camerafy(maphandler.draw(), screen, 1, playerpos,cameradir )
+    # Updating classes
+    player.update(maphandler) # Gets and handles input and such
+    camera.camerafy(maphandler.draw(), screen, 1, player.campos, player.dir ) # Draws the map, scaled and rotated
 
-    for event in pygame.event.get():
+    for event in pygame.event.get(): # Check if game is closed basically, at least for now
         if event.type == pygame.QUIT:
             run = False
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        playerpos = playerpos[0] + 0.05*m.cos(m.radians(cameradir - 90)), playerpos[1] + 0.05*m.sin(m.radians(cameradir - 90))
-        print (cameradir)
-
-
-    cameradir += pygame.mouse.get_rel()[0]/2
-
-    pygame.display.flip()
+    pygame.display.flip() # Update screen
