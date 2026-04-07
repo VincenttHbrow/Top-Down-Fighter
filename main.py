@@ -22,7 +22,7 @@ player = player.Player()
 maphandler = mapsys.Maphandler()
 
 # Temp stuff, testing/demo purposes. Will find better systems to handle.
-maphandler.load('testmap')
+maphandler.load('testmap', 'tileset1')
 player.pos = 2,2
 
 

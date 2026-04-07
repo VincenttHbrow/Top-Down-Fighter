@@ -3,7 +3,6 @@
 ## SPECIFIC
 
 ### SOON:
-- Tileset System
 - Entity Handler (player, npc, objects)
 
 ### SOONISH
@@ -17,6 +16,7 @@
 - Combat System
 - Dialogue System
 - Enemy AI
+- Map Editor
 - Polished Sprites & Textures
 - Equipment Menu(s)
 - Polished Map(s)

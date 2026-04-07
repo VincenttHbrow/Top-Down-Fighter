@@ -13,22 +13,40 @@ class Maphandler():
         pass
     
 
-    def load(self, mapname):
-        self.mapfile = open((mapname + ".txt"), 'r')
+    def load(self, mapname, tileset):
+        '''
+        Loads the map and tileset from disk.
+        The first line of the mapfile is whether a given tile is solid. '0' is passable, '1' is solid. 
+        Just goes through the tiles in order. Tile 0 is always void, leaving tilesets having 9 tiles.
+        This means that the tileset resolution should be 16x144.
+        Additionally, because tilesets and solid tiles are stored separately, one map using a given tileset
+        could have different wall/floor tiles than another map with that same tileset.
+        Not sure if that's useful yet.
+        '''
+        self.mapfile = open(('maps/' + mapname + ".txt"), 'r')
         self.mapdata = self.mapfile.read().splitlines()
+        self.tiledata = {}
+        # This is again just putting whether or not tileset should be solid in a dictionary
+        for tile in range(len(self.mapdata[0])):
+            solid = False
+            if self.mapdata[0][tile] == '1':
+                solid = True
+            self.tiledata[str(tile)] = solid
+        self.mapdata.remove(self.mapdata[0])
 
-        # Insert tileset loading system, (maybe?) involving (mapname + ".png")
+        # Tile loading system, creates 9 individual tiles from 1 larger tileset image.
+        self.tileset = pygame.image.load('tilesets/' + tileset + '.png')
+        self.tiles = [0]
+        for tile in range(9):
+            print (-(tile*TILESIZE))
+            tilesurface = pygame.surface.Surface((TILESIZE, TILESIZE))
+            tilesurface.blit(self.tileset, (-(tile*TILESIZE), 0))
+            self.tiles.append(tilesurface)
 
-        # The following is placeholder tileset loading
-        wall = pygame.image.load('wall.png')
-        floor = pygame.image.load('floor.png')
-        self.tiles = [0,wall,floor]
-        self.tiledata = {'0': False,
-                         '1': True,
-                         '2': False}
         
         # Terminal message for when map done loading. Not super important.
-        print ('Map successfully loaded! \nMapdata:\n' + str(self.mapdata))
+        print ('Map successfully loaded! \nMapdata:\n' + str(self.mapdata)+ '\nTiledata:\n'+\
+               str(self.tiledata))
         
 
     def draw(self): # Draws an unscaled map based on whatever file is loaded
