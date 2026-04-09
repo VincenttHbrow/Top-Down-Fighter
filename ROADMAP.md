@@ -3,17 +3,17 @@
 ## SPECIFIC
 
 ### SOON:
-- Entity Handler (player, npc, objects)
+- REALLY gotta move the player movement stuff into the entitysys module
+- Setting/Story Concept
 
 ### SOONISH
-- Setting/Story Concept
 - Concept Art (characters, setting)
 - Momentum Based Movement
+- Combat System
 
 ## VAGUE
 
 ### DOWN THE LINE
-- Combat System
 - Dialogue System
 - Enemy AI
 - Map Editor

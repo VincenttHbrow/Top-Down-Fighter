@@ -38,7 +38,6 @@ class Maphandler():
         self.tileset = pygame.image.load('tilesets/' + tileset + '.png')
         self.tiles = [0]
         for tile in range(9):
-            print (-(tile*TILESIZE))
             tilesurface = pygame.surface.Surface((TILESIZE, TILESIZE))
             tilesurface.blit(self.tileset, (-(tile*TILESIZE), 0))
             self.tiles.append(tilesurface)

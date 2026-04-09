@@ -4,6 +4,16 @@
 
 ### Update Notes
 
+##### V0.0.4 - Entity Systems
+- Made an entity system to draw things (as it stands just the player sprite and a crate) on the map.
+- Made sprites capable of being animated and rotating, as well as colliding
+- Added "sprites" folder with little animated dude to walk around and a crate
+- Will have to move some of the player movement stuff (collisions etc) to the entity class because of streamlining
+- Added new tileset, looks better IMO
+- Locked the mouse to the screen and hid it
+- Added "esc" as exit shortcut
+- Added ENTITYSIZE and ANIMATIONSPEED variables to settings, fairly self explanatory.
+
 ##### V0.0.3 - Tilesets
 - Added link to the roadmap in the readme
 - Tiles are now stored in and created from single tileset files.
