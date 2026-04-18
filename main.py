@@ -37,7 +37,6 @@ while run:
     screen.fill((0,0,0))
 
     # Updating classes
-    player.update(maphandler) # Gets and handles input and such
     drawnmap = maphandler.draw()
     entityhandler.draw(drawnmap, maphandler)
     camera.camerafy(drawnmap, screen, 1, player.campos, player.dir ) # Draws the map, scaled and rotated

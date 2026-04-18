@@ -12,6 +12,9 @@ TILESIZE = 16 # How large of tiles are to be used in tilesets
 ENTITYSIZE = 16 # Resolution of entities, scales to tilesize.
 RESOLUTIONMULT = 8 # How high to scale up the map and whatnot
 ANIMATIONSPEED = 12 # FPS of animated sprites
+MOVESPEED = 0.05
+
+DEBUGMODE = False
 
 # Input stuff
 MOUSESENS = 0.3 # Mouse sensitivity multiplier. 0.3 or 0.25 is a good baseline.

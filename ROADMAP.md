@@ -3,18 +3,18 @@
 ## SPECIFIC
 
 ### SOON:
-- REALLY gotta move the player movement stuff into the entitysys module
 - Setting/Story Concept
+- Fix bug where player gets stuck when facing parrallel to wall and moving diagonally forward + left or right
+- Optimise map to only render near player because bigger maps run like crap
 
 ### SOONISH
+- Dialogue System
 - Concept Art (characters, setting)
-- Momentum Based Movement
 - Combat System
 
 ## VAGUE
 
 ### DOWN THE LINE
-- Dialogue System
 - Enemy AI
 - Map Editor
 - Polished Sprites & Textures

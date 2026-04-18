@@ -4,6 +4,14 @@
 
 ### Update Notes
 
+##### V0.0.5 - Movement & Hitbox improvements
+- Hitboxes no longer are altered in size by the direction of an object
+- Character hitbox made smaller (1/2 of tilesize)
+- Debug mode; currently only shows hitboxes but may do more in future
+- Movement is now constant speed instead of being higher when moving diagonally
+- Checks for wall collisions with the corners of the hitbox instead of center
+- Moved the movement code around
+
 ##### V0.0.4 - Entity Systems
 - Made an entity system to draw things (as it stands just the player sprite and a crate) on the map.
 - Made sprites capable of being animated and rotating, as well as colliding
