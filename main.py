@@ -35,11 +35,14 @@ while run:
     # Standard pygame update stuff
     clock.tick(FPS)
     screen.fill((0,0,0))
+    if DEBUGMODE:
+        print('fps: ' + str(clock.get_fps()))
 
     # Updating classes
-    drawnmap = maphandler.draw()
+    drawnmap = maphandler.draw(player)
     entityhandler.draw(drawnmap, maphandler)
-    camera.camerafy(drawnmap, screen, 1, player.campos, player.dir ) # Draws the map, scaled and rotated
+    #screen.blit(drawnmap, (0,0))
+    camera.camerafy(drawnmap, screen, 1, player.dir ) # Draws the map, scaled and rotated
 
     for event in pygame.event.get(): # Check if game is closed basically, at least for now
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):

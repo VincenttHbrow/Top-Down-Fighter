@@ -13,6 +13,7 @@ ENTITYSIZE = 16 # Resolution of entities, scales to tilesize.
 RESOLUTIONMULT = 8 # How high to scale up the map and whatnot
 ANIMATIONSPEED = 12 # FPS of animated sprites
 MOVESPEED = 0.05
+RENDERDIST = 14
 
 DEBUGMODE = False
 

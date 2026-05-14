@@ -8,7 +8,7 @@ This module is dedicated to getting the game to display correctly, and maybe eve
 '''
 
 
-def camerafy(mapsurface, destsurface, zoom, pos, direction):
+def camerafy(mapsurface, destsurface, zoom, direction):
     """
     Given a surface input, this function resizes and rotates it to reflect the player's position and direction.
     May also have some smoothing shit in here down the line.
@@ -17,8 +17,8 @@ def camerafy(mapsurface, destsurface, zoom, pos, direction):
     angle = m.radians(-direction)# I hate working with radians. Conversion is important.
 
     # zoompos is just the position to display the map at after map resize but before rotation
-    zoompos = (pos[0]+0.5)*RESOLUTIONMULT*zoom*TILESIZE, (pos[1]+0.5)*RESOLUTIONMULT*zoom*TILESIZE
-    # The 0.5's are temporary to center player without rect
+    zoompos = 0.5*RESOLUTIONMULT*zoom*TILESIZE,0.5*RESOLUTIONMULT*zoom*TILESIZE
+    # The 0.5's just center player
 
     # all of this is to calculate the position to display the map in after rotation and zoom.
     x1 = zoompos[0]*m.cos(angle) - zoompos[1]*m.sin(angle)

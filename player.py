@@ -55,6 +55,6 @@ class Player():
         if mousepos[0] > 1200 or mousepos[0] < 80 or mousepos[1] > 640 or mousepos[1] <80:
             pygame.mouse.set_pos([RESOLUTION[0]/2, RESOLUTION[1]/2]) # Reset cursor to center of screen
 
-        self.campos = self.pos[0] - 0.5*len(maphandler.mapdata[0]), self.pos[1] - 0.5*len(maphandler.mapdata)
+        self.campos = self.pos[0] - 0.5*(RENDERDIST), self.pos[1] - 0.5*(RENDERDIST)
         # campos is for display purposes; the camera displays the map's position wrong and this is a bandaid fix.
         return posmod, dirmod

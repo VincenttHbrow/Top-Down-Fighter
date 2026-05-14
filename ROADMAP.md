@@ -3,6 +3,7 @@
 ## SPECIFIC
 
 ### SOON:
+- FIX PERFORMANCE ISSUES
 - Setting/Story Concept
 - Fix bug where player gets stuck when facing parrallel to wall and moving diagonally forward + left or right
 - Optimise map to only render near player because bigger maps run like crap

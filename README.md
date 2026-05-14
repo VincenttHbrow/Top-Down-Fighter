@@ -4,6 +4,13 @@
 
 ### Update Notes
 
+##### V0.0.6 - Optimisation... improvements?
+- Noticed on larger maps, drawing the whole map at once and then rotating was killing my FPS
+- Spent like 3 hours rewriting the whole map drawing thing
+- Didn't fix the performance issues, arguably made it worse
+- Posted on stackoverflow, hopefully someone says something
+- FML
+
 ##### V0.0.5 - Movement & Hitbox improvements
 - Hitboxes no longer are altered in size by the direction of an object
 - Character hitbox made smaller (1/2 of tilesize)

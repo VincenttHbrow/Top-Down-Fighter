@@ -89,9 +89,10 @@ class Entity():
                 
 
         # This is again just to make sure shit is rotated right
-        rotatedimg = pygame.transform.rotate(self.img, -self.dir) 
+        rotatedimg = pygame.transform.rotate(self.img, -self.dir).convert_alpha()
         self.mask = pygame.mask.from_surface(rotatedimg) # Don't know why I bother with this shit it doesn't work well at all
-        self.rect = self.mask.get_rect(center = (self.pos[0]*TILESIZE + 0.5*TILESIZE, self.pos[1]*TILESIZE+ 0.5*TILESIZE))
+        self.rect = self.mask.get_rect(center = ((self.pos[0] - maphandler.playertile[0] + maphandler.offset[0])*TILESIZE + 0.5*TILESIZE,\
+                                                 (self.pos[1] - maphandler.playertile[1] + maphandler.offset[1])*TILESIZE+ 0.5*TILESIZE))
         surface.blit(rotatedimg, self.rect)
         
         # This is scaling and centering the hitbox for collision detection

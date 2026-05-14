@@ -48,13 +48,28 @@ class Maphandler():
                str(self.tiledata))
         
 
-    def draw(self): # Draws an unscaled map based on whatever file is loaded
-        surface = pygame.surface.Surface((len(self.mapdata[0])*TILESIZE, len(self.mapdata)*TILESIZE))
+    def draw(self, player): # Draws an unscaled map based on whatever file is loaded
+        surface = pygame.surface.Surface((RENDERDIST*TILESIZE, RENDERDIST*TILESIZE))
         # Creates a surface that's cropped to be the same size as the map is, so as to rotate properly.
 
+        # This is the offset WITHIN a given tile
+        self.offset = -(player.pos[0] - round(player.pos[0])), -(player.pos[1] - round(player.pos[1]))
+        # Half the draw distance
+        halfdist = 0.5*RENDERDIST
+        # This isn't actually the player's tile, it's just the offset on the tile-level
+        self.playertile = round(player.pos[0] - halfdist), round(player.pos[1] - halfdist)
+
+        if DEBUGMODE:
+            print(self.playertile)
+
         # This loop draws each tile in its correct position on the above created surface.
-        for row in range(len(self.mapdata)):
-            for tile in range(len(self.mapdata[row])):
-                if not self.mapdata[row][tile] == '0': # 0 is 'void' tile. 
-                    surface.blit(self.tiles[int(self.mapdata[row][tile])], (tile*TILESIZE, row*TILESIZE))
-        return surface
+        for row in range(RENDERDIST):
+            if 0 < row + self.playertile[1]  and row + self.playertile[1] < len(self.mapdata):
+                for tile in range(RENDERDIST):
+                    if 0 < tile + self.playertile[0] and tile + self.playertile[0] < len(self.mapdata[row + self.playertile[1]]):
+                        if not self.mapdata[int(row + self.playertile[1])][int(tile + self.playertile[0])] == '0':
+                            surface.blit(self.tiles[int(self.mapdata[row + self.playertile[1]][tile + self.playertile[0]])],\
+                                         ((tile + self.offset[0])*TILESIZE,(row + self.offset[1])*TILESIZE))
+
+
+        return surface.convert_alpha()
