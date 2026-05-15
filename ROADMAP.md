@@ -3,15 +3,14 @@
 ## SPECIFIC
 
 ### SOON:
-- FIX PERFORMANCE ISSUES
 - Setting/Story Concept
-- Fix bug where player gets stuck when facing parrallel to wall and moving diagonally forward + left or right
-- Optimise map to only render near player because bigger maps run like crap
+- Fix jittering box bug.
+- Combat System (attacks, lock-on)
 
 ### SOONISH
 - Dialogue System
 - Concept Art (characters, setting)
-- Combat System
+- Basic enemy AI
 
 ## VAGUE
 

@@ -34,14 +34,9 @@ class Player():
                 self.currentanim = 1
                 posmov = (0,0)
                 posmov = MOVESPEED*m.cos(m.radians(self.dir + KEYDIRS[key])), 0
-                self.tile = maphandler.mapdata[round(self.pos[1])][round(self.pos[0] + posmov[0])]
-                if maphandler.tiledata[self.tile]:
-                    posmov = (0,0)
+
 
                 posmov =  posmov[0], MOVESPEED*m.sin(m.radians(self.dir + KEYDIRS[key]))
-                self.tile = maphandler.mapdata[round(self.pos[1] + posmov[1])][round(self.pos[0] + posmov[0])]
-                if maphandler.tiledata[self.tile]:
-                    posmov = (posmov[0], 0)
                 keynum += 1
 
                 if keynum > 0:

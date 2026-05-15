@@ -2,23 +2,29 @@ import pygame
 from settings import *
 import math as m
 
-# This checks for map collisions at all corners of rect
-# Should be good unless I have entities bigger than 1 tile which I'm not planning on
-def getmapcollide(rect, maphandler, vertical):
+def getmapcollide(rect, pos, maphandler, vertical):
+    '''
+    This checks for map collisions at all corners of rect centered on the sprites map position 
+    (as opposed to its screen position).
+    Should be good unless I have entities bigger than 1 tile which I'm not planning on.
+    '''
     modrect = pygame.rect.Rect(rect)
-    if vertical:
-        modrect.w -=2
+    if vertical: # This bit used to be so 1x1 Tile hitboxes could fit through single-tile gaps.
+        modrect.w -=0
     else:
-        modrect.h -=2
-    modrect.center = rect.center
+        modrect.h -=0
+    modrect.center = pos[0]*TILESIZE,pos[1]*TILESIZE
     rectpoints = [modrect.topleft, modrect.topright, modrect.bottomleft, modrect.bottomright]
-    if DEBUGMODE:
-        print (rectpoints)
     collide = False
     for point in rectpoints:
         tile = maphandler.mapdata[int(point[1]/TILESIZE)][int(point[0]/TILESIZE)]
         if maphandler.tiledata[tile]:
             collide = True
+    if DEBUGMODE:
+        word = 'X: '
+        if vertical:
+            word = "Y: "
+        print ('rectpoints:' + str(rectpoints) + "\n collide " + word + str(collide))
     return collide
 
 class Entity():
@@ -34,7 +40,7 @@ class Entity():
         self.dir = dir
         self.img = self.sprite # This is specifically the image to be drawn on the map at any given time.
         self.pos = pos
-        self.rectsize = TILESIZE
+        self.rectsize = TILESIZE - 2
 
         # This (should) divide the spritesheet into seperate frames within a nested list, sorted into animations by row.
         if spritefile[-5:] == 'sheet':
@@ -53,7 +59,7 @@ class Entity():
                     animation.append(surface)
                 self.frames.append(animation)
             self.img = self.frames[0][0]
-        self.rect = self.img.get_rect(center = (self.pos[0]*TILESIZE + 0.5*TILESIZE, self.pos[1]*TILESIZE+ 0.5*TILESIZE))
+        self.rect = self.img.get_rect(center = (self.pos[0]*TILESIZE, self.pos[1]*TILESIZE))
 
     
     def draw(self, surface, nextframe, entities, maphandler): # Draws the entity's (rotated if applicable) image on the map
@@ -90,9 +96,9 @@ class Entity():
 
         # This is again just to make sure shit is rotated right
         rotatedimg = pygame.transform.rotate(self.img, -self.dir).convert_alpha()
-        self.mask = pygame.mask.from_surface(rotatedimg) # Don't know why I bother with this shit it doesn't work well at all
-        self.rect = self.mask.get_rect(center = ((self.pos[0] - maphandler.playertile[0] + maphandler.offset[0])*TILESIZE + 0.5*TILESIZE,\
-                                                 (self.pos[1] - maphandler.playertile[1] + maphandler.offset[1])*TILESIZE+ 0.5*TILESIZE))
+        #self.mask = pygame.mask.from_surface(rotatedimg) # Don't know why I bother with this shit it doesn't work well at all
+        self.rect = rotatedimg.get_rect(center = ((self.pos[0] - maphandler.playertile[0] + maphandler.offset[0])*TILESIZE,\
+                                                 (self.pos[1] - maphandler.playertile[1] + maphandler.offset[1])*TILESIZE))
         surface.blit(rotatedimg, self.rect)
         
         # This is scaling and centering the hitbox for collision detection
@@ -104,28 +110,27 @@ class Entity():
         # This is to show hitboxes if in debug mode
         if DEBUGMODE:
             hitbox = pygame.surface.Surface((self.rect.w, self.rect.h))
+            hitbox.fill((255,0,0))
             surface.blit(hitbox, self.rect)
         
         # This is map collisions
-        posmodscaled = posmod[0]*TILESIZE, posmod[1]*TILESIZE
-
         if posmod != (0,0):
-            self.rect.center = self.rect.center[0] + posmodscaled[0], self.rect.center[1]
-            if getmapcollide(self.rect, maphandler, False):
-                self.rect.center = self.rect.center[0] - posmodscaled[0], self.rect.center[1]
-            else:
-                self.pos = self.pos[0] + posmod[0], self.pos[1] 
+            self.pos = self.pos[0] + posmod[0], self.pos[1]
+            if getmapcollide(self.rect, self.pos, maphandler, False):
+                self.pos = self.pos[0] - posmod[0], self.pos[1]
 
-            self.rect.center = self.rect.center[0], self.rect.center[1] + posmodscaled[1]
-            if getmapcollide(self.rect, maphandler, True):
-                self.rect.center = self.rect.center[0], self.rect.center[1] - posmodscaled[1]
-            else:
-                self.pos = self.pos[0], self.pos[1]  + posmod[1]
+            self.pos = self.pos[0], self.pos[1] + posmod[1]
+            if getmapcollide(self.rect, self.pos, maphandler, True):
+                self.pos = self.pos[0], self.pos[1] - posmod[1]
             
+            # More debugging stuff
             if DEBUGMODE:
-                print ("X collide: " + str(getmapcollide(self.rect, maphandler, False)) +\
-                        "\nY collide :" + str(getmapcollide(self.rect, maphandler, True)))
-                print (posmod)
+                tile = maphandler.mapdata[int(self.rect.center[1]/TILESIZE)][int(self.rect.center[0]/TILESIZE)]
+                print (#"X collide: " + str(getmapcollide(self.rect, self.pos, maphandler, False)) +\
+                        #"\nY collide :" + str(getmapcollide(self.rect, self.pos, maphandler, True)) +\
+                        "\nHitbox Center:" + str(int(self.rect.center[0]/TILESIZE)) + ',' + str(int(self.rect.center[0]/TILESIZE)) +\
+                        "\nTile:" + tile + "\nPosition: " + str(self.pos))
+                print ('position modified by ' + str(posmod))
 
 
 class Entityhandler():
@@ -133,7 +138,7 @@ class Entityhandler():
     This just handles the many instances of the Entity class concisely.
     '''
     def __init__(self, player):
-        self.entities = [Entity('cratesprite', (3,3), 15), Entity('playersheet', (2,2), 0, player)]
+        self.entities = [Entity('cratesprite', (4,4), 15), Entity('playersheet', (3,3), 0, player)]
         self.frame = 0 # Frame is just to keep track of when to shift animated entities' frames
     
     def draw(self, surface, maphandler): # Draws all the entites onto the map

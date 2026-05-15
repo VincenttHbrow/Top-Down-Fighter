@@ -41,8 +41,11 @@ while run:
     # Updating classes
     drawnmap = maphandler.draw(player)
     entityhandler.draw(drawnmap, maphandler)
-    #screen.blit(drawnmap, (0,0))
-    camera.camerafy(drawnmap, screen, 1, player.dir ) # Draws the map, scaled and rotated
+
+    if CAMERA: # Displays map in the corner of the screen if camera is off, for debugging
+        camera.camerafy(drawnmap, screen, 1, player.dir ) # Draws the map, scaled and rotated
+    else:
+        screen.blit(drawnmap, (0,0))
 
     for event in pygame.event.get(): # Check if game is closed basically, at least for now
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):

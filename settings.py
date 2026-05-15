@@ -14,8 +14,8 @@ RESOLUTIONMULT = 8 # How high to scale up the map and whatnot
 ANIMATIONSPEED = 12 # FPS of animated sprites
 MOVESPEED = 0.05
 RENDERDIST = 14
-
-DEBUGMODE = False
+DEBUGMODE = True
+CAMERA = True
 
 # Input stuff
 MOUSESENS = 0.3 # Mouse sensitivity multiplier. 0.3 or 0.25 is a good baseline.

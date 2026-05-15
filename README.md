@@ -4,6 +4,14 @@
 
 ### Update Notes
 
+##### V0.0.7 - Actual optimisation improvements
+- More or less fixed frame drop while rotating map. Will have to test on lower end machine but the FPS is fairly consistent?
+- Fixed bug where guy gets stuck on walls. It was leftover code from when all the movement stuff was in the player module.
+- Simplified existing movement code.
+- Entity centers no longer offset by half a tile, though that is easy enough to reintroduce.
+- Clarified the data displayed in debug mode, including making hitboxes red.
+- Added camera setting that allows display without the zoom & rotation effects, for debugging
+
 ##### V0.0.6 - Optimisation... improvements?
 - Noticed on larger maps, drawing the whole map at once and then rotating was killing my FPS
 - Spent like 3 hours rewriting the whole map drawing thing

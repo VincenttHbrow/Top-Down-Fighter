@@ -60,7 +60,7 @@ class Maphandler():
         self.playertile = round(player.pos[0] - halfdist), round(player.pos[1] - halfdist)
 
         if DEBUGMODE:
-            print(self.playertile)
+            print("playertile:" + str(self.playertile))
 
         # This loop draws each tile in its correct position on the above created surface.
         for row in range(RENDERDIST):
