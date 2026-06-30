@@ -2,7 +2,20 @@
 
 [Roadmap](ROADMAP.md)
 
+Thank you to jsbueno on stackoverflow for helping solve performance issues!
+
+Any mention of AI in this document or project has nothing to do with generative AI or LLMs.
+In all likelihood it is referring to enemy behaviours.
+This is a human-made game.
+
 ### Update Notes
+
+##### V0.0.8 - Primitive enemy AI
+- Added an enemy to the game.
+- Currently, it just turns to face you and moves to keep distance.
+- Functions properly with physics interactions between sprites
+- Added fullscreen setting
+- Added new spritesheet for enemy, currently just a copy of player spritesheet
 
 ##### V0.0.7 - Actual optimisation improvements
 - More or less fixed frame drop while rotating map. Will have to test on lower end machine but the FPS is fairly consistent?

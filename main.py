@@ -15,6 +15,9 @@ Run this to play.
 # Crucial pygame initialisations
 pygame.init()
 screen = pygame.display.set_mode(RESOLUTION)
+if FULLSCREEN:
+    screen = pygame.display.set_mode(RESOLUTION, pygame.FULLSCREEN)
+
 clock = pygame.time.Clock()
 pygame.event.set_grab(True) # locks cursor to game window
 pygame.mouse.set_visible(False)

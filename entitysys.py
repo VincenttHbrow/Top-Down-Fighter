@@ -33,10 +33,11 @@ class Entity():
     Anything interactable, anything living, etc.
     As it stands it just draws the player sprite, but will be used for more stuff in future. 
     '''
-    def __init__(self, spritefile, pos = (0,0), dir = 0, player = None):
+    def __init__(self, spritefile, pos = (0,0), dir = 0, ai = None, player = None):
         self.sprite = pygame.image.load('sprites/' + spritefile + '.png').convert_alpha()
         self.animated = False # Just whether an object is a single frame or a spritesheet
         self.player = player # Player should be left empty UNLESS IT'S THE PLAYER CHARACTER
+        self.ai = ai
         self.dir = dir
         self.img = self.sprite # This is specifically the image to be drawn on the map at any given time.
         self.pos = pos
@@ -69,6 +70,11 @@ class Entity():
             self.dir -= 360
         if self.dir < 0:
             self.dir += 360
+
+        if self.ai != None:
+            posmod, dirmod, self.currentanim = self.ai.update(self.pos, self.dir)
+            self.dir = self.dir + dirmod
+
         if self.player != None:
             posmod, dirmod = self.player.getmovement(maphandler)
             self.dir += dirmod
@@ -133,12 +139,56 @@ class Entity():
                 print ('position modified by ' + str(posmod))
 
 
+class AI():
+    def __init__(self, caution, reaction, movespeed, player):
+        self.caution = caution
+        self.reaction = reaction
+        self.player = player
+        self.movespeed = movespeed
+
+    def update(self, epos, dir):
+        # direction update part
+        ypos1 = self.player.pos[1]
+        ypos2 = epos[1]
+        xpos1 = self.player.pos[0]
+        xpos2 = epos[0]
+        targetdir = m.atan2(ypos1 - ypos2 , xpos1 - xpos2)
+        targetdir = targetdir*180/m.pi + 90
+        if targetdir < 0:
+            targetdir = targetdir + 360
+        dirmod =  -(dir - targetdir)
+        if dirmod > 180:
+            dirmod = 180 - dirmod
+        if dirmod < -180:
+            dirmod = -180 - dirmod
+        
+        if abs(dirmod) > self.reaction:
+            dirmod = dirmod/abs(dirmod)*self.reaction
+
+        # position update part
+        movement = self.movespeed*m.cos(m.radians(dir + dirmod - 90)), self.movespeed*m.sin(m.radians(dir + dirmod - 90))
+        currentanim = 0
+        dist = m.sqrt(round(xpos1 - xpos2)**2 + round(ypos1 - ypos2)**2)
+        posmod = 0,0
+        if  dist < self.caution - 0.5:
+            posmod = -movement[0], -movement[1]
+            currentanim = 1
+        elif dist > self.caution + 0.5:
+            posmod = movement[0], movement[1]
+            currentanim = 1
+
+
+        return posmod, dirmod, currentanim
+
+
+
 class Entityhandler():
     '''
     This just handles the many instances of the Entity class concisely.
     '''
     def __init__(self, player):
-        self.entities = [Entity('cratesprite', (4,4), 15), Entity('playersheet', (3,3), 0, player)]
+        self.entities = [Entity('cratesprite', (4,4), 15), Entity('playersheet', (3,3), 0, None, player), \
+                         Entity('enemysheet', (5,5), 0, AI(3,1,0.03,player))] 
         self.frame = 0 # Frame is just to keep track of when to shift animated entities' frames
     
     def draw(self, surface, maphandler): # Draws all the entites onto the map

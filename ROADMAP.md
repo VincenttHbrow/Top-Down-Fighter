@@ -4,18 +4,17 @@
 
 ### SOON:
 - Setting/Story Concept
-- Fix jittering box bug.
+- Fix jittering box bug if I decide I care
 - Combat System (attacks, lock-on)
 
 ### SOONISH
 - Dialogue System
 - Concept Art (characters, setting)
-- Basic enemy AI
 
 ## VAGUE
 
 ### DOWN THE LINE
-- Enemy AI
+- Improved Enemy AI
 - Map Editor
 - Polished Sprites & Textures
 - Equipment Menu(s)
