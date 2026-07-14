@@ -24,14 +24,16 @@ class Player():
         self.campos = 0, 0
         self.currentanim = 0
 
-    def getmovement(self, maphandler): # Returns where the player input determines the PC should move
-        self.currentanim = 0 # Animation 0 is idle, Animation 1 is walk
+    def getmovement(self, occupied, maphandler): # Returns where the player input determines the PC should move
+        if occupied <= 0:
+            self.currentanim = 0 # Animation 0 is idle, Animation 1 is walk, 2 is attack
         keynum = 0 # Number of keys pressed
         keys = pygame.key.get_pressed()
         posmod = 0,0
         for key in KEYDIRS.keys(): # This for loop handles directional input
             if keys[key]:
-                self.currentanim = 1
+                if occupied <= 0:
+                    self.currentanim = 1
                 posmov = (0,0)
                 posmov = MOVESPEED*m.cos(m.radians(self.dir + KEYDIRS[key])), 0
 
@@ -52,4 +54,12 @@ class Player():
 
         self.campos = self.pos[0] - 0.5*(RENDERDIST), self.pos[1] - 0.5*(RENDERDIST)
         # campos is for display purposes; the camera displays the map's position wrong and this is a bandaid fix.
-        return posmod, dirmod
+
+        if pygame.mouse.get_just_pressed()[0]: # Get attack input
+            self.currentanim = 2
+            occupied = 4
+
+        if occupied > 0: # Don't accept new input when occupied
+            return (0,0), 0, occupied
+        else:
+            return posmod, dirmod, 0

@@ -42,6 +42,7 @@ class Entity():
         self.img = self.sprite # This is specifically the image to be drawn on the map at any given time.
         self.pos = pos
         self.rectsize = TILESIZE - 2
+        self.occupied = 0 # Occupied is the number of frames in an uncancellable animation
 
         # This (should) divide the spritesheet into seperate frames within a nested list, sorted into animations by row.
         if spritefile[-5:] == 'sheet':
@@ -64,32 +65,46 @@ class Entity():
 
     
     def draw(self, surface, nextframe, entities, maphandler): # Draws the entity's (rotated if applicable) image on the map
-        # This is, again, only relevant if it's the player character's entity
+        # This is, again, only relevant if it's an enemy, NPC, or PC.
         posmod = 0,0
         if self.dir > 360:
             self.dir -= 360
         if self.dir < 0:
             self.dir += 360
 
+        # Ask AI class what to do
         if self.ai != None:
-            posmod, dirmod, self.currentanim = self.ai.update(self.pos, self.dir)
+            input = self.ai.update(self.pos, self.dir)
+            if input[2] != self.currentanim: # Resets animation frame to 0 when switching animations.
+                self.frame = -1
+            posmod, dirmod, self.currentanim = input
             self.dir = self.dir + dirmod
 
+        # Get input from player for PC entity
         if self.player != None:
-            posmod, dirmod = self.player.getmovement(maphandler)
+            input = self.player.getmovement(self.occupied, maphandler)
+            posmod, dirmod, self.occupied = input
             self.dir += dirmod
             self.player.dir = self.dir
             self.player.pos = self.pos
+            if self.player.currentanim != self.currentanim: # Resets animation frame to 0 when switching animations.
+                self.frame = -1
             self.currentanim = self.player.currentanim
 
         
         # This is for animated entities switching frames if applicable
         if nextframe and self.animated:
+            if self.occupied > 0:
+                self.occupied -= 1
             if not self.frame >= len(self.frames[self.currentanim] ) - 1:
                 self.frame += 1
             else:
                 self.frame = 0
             self.img = self.frames[self.currentanim][self.frame]
+            if self.currentanim == 2: # TEMPORARY hitbox size increase so punch lands
+                self.rectsize = TILESIZE
+            else:
+                self.rectsize = TILESIZE*0.8
 
         # This is collisions stuff. Worth seeing if I can find a way to shrink the rects to 1 tile.
         for entity in entities:
@@ -98,6 +113,9 @@ class Entity():
                     movedir = m.atan2(self.pos[1]-entity.pos[1],self.pos[0] - entity.pos[0])
 
                     posmod = posmod[0] + MOVESPEED*m.cos(movedir), posmod[1] + MOVESPEED*m.sin(movedir)
+                    if entity.animated: # TEMPORARY code for getting knocked back by punch
+                        if entity.currentanim == 2:
+                            posmod = posmod[0] + 3*MOVESPEED*m.cos(movedir), posmod[1] + 3*MOVESPEED*m.sin(movedir)
                 
 
         # This is again just to make sure shit is rotated right

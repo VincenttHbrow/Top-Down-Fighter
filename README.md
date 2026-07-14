@@ -10,6 +10,12 @@ This is a human-made game.
 
 ### Update Notes
 
+##### V0.0.9 - Uncancellable animations
+- Added a punch animation for the PC triggered with LMB
+- Currently just knocks characters/objects back
+- Player cannot move or turn when punch is being performed
+- Animation frame now resets when animation is changed
+
 ##### V0.0.8 - Primitive enemy AI
 - Added an enemy to the game.
 - Currently, it just turns to face you and moves to keep distance.
