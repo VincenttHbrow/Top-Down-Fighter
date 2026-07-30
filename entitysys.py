@@ -43,6 +43,11 @@ class Entity():
         self.pos = pos
         self.rectsize = TILESIZE - 2
         self.occupied = 0 # Occupied is the number of frames in an uncancellable animation
+        self.invulnerable = 0 # Number of (animation not engine) frames where an entity can't take damage
+        self.weapon = None
+        self.weaponimg = None # Image associated with the weapon
+        if self.player != None: # Temp code to equip player with spear
+            self.weapon = 'spear'
 
         # This (should) divide the spritesheet into seperate frames within a nested list, sorted into animations by row.
         if spritefile[-5:] == 'sheet':
@@ -74,11 +79,12 @@ class Entity():
 
         # Ask AI class what to do
         if self.ai != None:
-            input = self.ai.update(self.pos, self.dir)
-            if input[2] != self.currentanim: # Resets animation frame to 0 when switching animations.
-                self.frame = -1
-            posmod, dirmod, self.currentanim = input
-            self.dir = self.dir + dirmod
+            if not self.occupied:
+                input = self.ai.update(self.pos, self.dir)
+                if input[2] != self.currentanim: # Resets animation frame to 0 when switching animations.
+                    self.frame = -1
+                posmod, dirmod, self.currentanim = input
+                self.dir = self.dir + dirmod
 
         # Get input from player for PC entity
         if self.player != None:
@@ -92,37 +98,62 @@ class Entity():
             self.currentanim = self.player.currentanim
 
         
-        # This is for animated entities switching frames if applicable
-        if nextframe and self.animated:
+        # This is for animated entities switching frames if applicable, as well as counting occupied and invul. frames
+        if nextframe:
             if self.occupied > 0:
                 self.occupied -= 1
-            if not self.frame >= len(self.frames[self.currentanim] ) - 1:
-                self.frame += 1
-            else:
-                self.frame = 0
-            self.img = self.frames[self.currentanim][self.frame]
-            if self.currentanim == 2: # TEMPORARY hitbox size increase so punch lands
-                self.rectsize = TILESIZE
-            else:
-                self.rectsize = TILESIZE*0.8
+            if self.invulnerable > 0:
+                self.invulnerable -= 1
+            if self.animated:
+                if not self.frame >= len(self.frames[self.currentanim] ) - 1:
+                    self.frame += 1
+                else:
+                    self.frame = 0
+                self.img = self.frames[self.currentanim][self.frame]
 
-        # This is collisions stuff. Worth seeing if I can find a way to shrink the rects to 1 tile.
+        # This is collisions stuff.
         for entity in entities:
             if not entity == self:
+                movedir = m.atan2(self.pos[1]-entity.pos[1],self.pos[0] - entity.pos[0])
                 if entity.rect.colliderect(self.rect):
-                    movedir = m.atan2(self.pos[1]-entity.pos[1],self.pos[0] - entity.pos[0])
-
                     posmod = posmod[0] + MOVESPEED*m.cos(movedir), posmod[1] + MOVESPEED*m.sin(movedir)
-                    if entity.animated: # TEMPORARY code for getting knocked back by punch
-                        if entity.currentanim == 2:
-                            posmod = posmod[0] + 3*MOVESPEED*m.cos(movedir), posmod[1] + 3*MOVESPEED*m.sin(movedir)
+            
+                dmgframes = [1,2,5,6]
+                if entity.weapon !=None and entity.currentanim > 1 and \
+                    entity.frame in dmgframes and self.invulnerable <= 0:
+                    # Handles checks for getting hit
+
+                    weapsize = WEAPONDATA[entity.weapon]['size']
+                    diroffset = m.cos(m.radians(-entity.dir - 90)), m.sin(m.radians(-entity.dir - 90))
+                    linestart = entity.weaprect.center[0]-8*diroffset[0], entity.weaprect.center[1]+8*diroffset[1]
+                    lineend = entity.weaprect.center[0]+weapsize*diroffset[0], entity.weaprect.center[1]-weapsize*diroffset[1]
+                    if DEBUGMODE: # Draws attack hitbox
+                        pygame.draw.line(surface, (255,0,0), linestart, lineend)
+                    if self.rect.clipline(linestart, lineend):
+                        self.occupied = 2
+                        self.invulnerable = 2
+                        posmod = posmod[0] + 4*MOVESPEED*m.cos(movedir), posmod[1] + 4*MOVESPEED*m.sin(movedir)
                 
 
         # This is again just to make sure shit is rotated right
         rotatedimg = pygame.transform.rotate(self.img, -self.dir).convert_alpha()
-        #self.mask = pygame.mask.from_surface(rotatedimg) # Don't know why I bother with this shit it doesn't work well at all
         self.rect = rotatedimg.get_rect(center = ((self.pos[0] - maphandler.playertile[0] + maphandler.offset[0])*TILESIZE,\
                                                  (self.pos[1] - maphandler.playertile[1] + maphandler.offset[1])*TILESIZE))
+
+        if self.weapon != None: # This is for drawing the weapon
+            if self.weaponimg == None:
+                self.weaponimg = pygame.image.load(('weapons/' + self.weapon + '.png'))
+            else:
+                rotatedweap = pygame.transform.rotate(self.weaponimg, -self.dir + 45).convert_alpha()
+                self.weaprect = rotatedweap.get_rect(center = ((self.pos[0] - maphandler.playertile[0] + maphandler.offset[0])*TILESIZE,\
+                                                 (self.pos[1] - maphandler.playertile[1] + maphandler.offset[1])*TILESIZE))
+                self.weaprect = self.weaprect.move(m.cos(m.radians(self.dir))*WEAPONXOFFSET, m.sin(m.radians(self.dir))*WEAPONXOFFSET)
+                self.weaprect = self.weaprect.move(m.cos(m.radians(self.dir-90))*WEAPONYOFFSET, m.sin(m.radians(self.dir-90))*WEAPONYOFFSET)
+                if self.currentanim == 2: # Moves the weapon around for the animation
+                    movedist = round(1.6*abs(m.sin(((m.pi*self.frame+1)/4)))*2)*2
+                    self.weaprect = self.weaprect.move(m.cos(m.radians(self.dir - 90))*movedist, m.sin(m.radians(self.dir - 90))*movedist)
+                surface.blit(rotatedweap, self.weaprect)
+
         surface.blit(rotatedimg, self.rect)
         
         # This is scaling and centering the hitbox for collision detection
@@ -134,7 +165,7 @@ class Entity():
         # This is to show hitboxes if in debug mode
         if DEBUGMODE:
             hitbox = pygame.surface.Surface((self.rect.w, self.rect.h))
-            hitbox.fill((255,0,0))
+            hitbox.fill((0,255,0))
             surface.blit(hitbox, self.rect)
         
         # This is map collisions
@@ -205,8 +236,8 @@ class Entityhandler():
     This just handles the many instances of the Entity class concisely.
     '''
     def __init__(self, player):
-        self.entities = [Entity('cratesprite', (4,4), 15), Entity('playersheet', (3,3), 0, None, player), \
-                         Entity('enemysheet', (5,5), 0, AI(3,1,0.03,player))] 
+        self.entities = [Entity('playersheet', (3,3), 0, None, player), Entity('cratesprite', (4,4), 15), \
+                         Entity('enemysheet', (5,5), 0, AI(1.6, 0.75, 0.025,player))] 
         self.frame = 0 # Frame is just to keep track of when to shift animated entities' frames
     
     def draw(self, surface, maphandler): # Draws all the entites onto the map

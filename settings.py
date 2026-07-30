@@ -16,7 +16,9 @@ MOVESPEED = 0.05
 RENDERDIST = 14
 DEBUGMODE = False
 CAMERA = True
-FULLSCREEN = True
+FULLSCREEN = False
+WEAPONXOFFSET = 5
+WEAPONYOFFSET = 7
 
 # Input stuff
 MOUSESENS = 0.3 # Mouse sensitivity multiplier. 0.3 or 0.25 is a good baseline.
@@ -25,4 +27,14 @@ KEYS = { # Dictionary containing keys so rebinding actions is easy
     'LEFT': pygame.K_a,
     'RIGHT': pygame.K_d,
     'BACKWARD': pygame.K_s,
+}
+
+WEAPONDATA = { # For storing damage reach speed etc.
+    # Size is measured from image center to weapon tip, can be negative.
+    'spear':{
+        'size': 9
+    },
+    'sword':{
+        'size': 3
+    }
 }

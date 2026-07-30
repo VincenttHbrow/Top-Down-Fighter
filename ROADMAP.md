@@ -3,8 +3,9 @@
 ## SPECIFIC
 
 ### SOON:
+- Multiple attack animations
+- Blocking/parrying system
 - Health & Damage
-- Attack Hitbox System
 - Momentum-Based Movement
 - Setting/Story Concept
 - Fix jittering box bug if I decide I care

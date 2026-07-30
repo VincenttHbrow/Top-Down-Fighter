@@ -9,6 +9,12 @@ In all likelihood it is referring to enemy behaviours.
 This is a human-made game.
 
 ### Update Notes
+##### V0.1.0 - Weapons
+- Added sword/spear weapons with their own attack hitboxes
+- Currently have the same animation and speed, only difference is reach
+- Duplicated punch animation, room to change it in future to allow combos
+- Added invulnerability for a moment after getting hit
+- Changed debug mode entity hitbox display to green, weapons display red.
 
 ##### V0.0.9 - Uncancellable animations
 - Added a punch animation for the PC triggered with LMB
