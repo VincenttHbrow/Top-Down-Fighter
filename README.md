@@ -9,6 +9,16 @@ In all likelihood it is referring to enemy behaviours.
 This is a human-made game.
 
 ### Update Notes
+##### V0.1.1 - SDL2 Rendering
+I was really sick of the performance issues and didn't want to make people run the game at lower resolutions
+or else suffer FPS-wise. The solution: GPU-accelerated rendering. My current pc can get a consistent 144FPS at
+1080p and with a render dist of 20 which is a hell of a lot better than it was.
+Hopefully this will be the last of the big engine optimisation updates.
+Changelog:
+- Completely overhauled main and camera modules to render with SDL2
+- Removed RESOLUTIONMULT variable; zoom is now controlled by render dist.
+- Removed a bunch of alpha conversions because they made no difference.
+
 ##### V0.1.0 - Weapons
 - Added sword/spear weapons with their own attack hitboxes
 - Currently have the same animation and speed, only difference is reach

@@ -8,7 +8,6 @@
 - Health & Damage
 - Momentum-Based Movement
 - Setting/Story Concept
-- Fix jittering box bug if I decide I care
 
 ### SOONISH
 - Dialogue System

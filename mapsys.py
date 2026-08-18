@@ -1,5 +1,6 @@
 import pygame
 from settings import *
+from pygame._sdl2 import Window, Renderer, Texture
 
 
 class Maphandler(): 
@@ -72,4 +73,4 @@ class Maphandler():
                                          ((tile + self.offset[0])*TILESIZE,(row + self.offset[1])*TILESIZE))
 
 
-        return surface.convert_alpha()
+        return surface

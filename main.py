@@ -5,6 +5,7 @@ import camera
 import math as m
 import player
 import entitysys
+from pygame._sdl2 import Window, Renderer, Texture
 
 
 """
@@ -14,9 +15,11 @@ Run this to play.
 
 # Crucial pygame initialisations
 pygame.init()
-screen = pygame.display.set_mode(RESOLUTION)
+screen = Window('TDF',RESOLUTION)
+renderer = Renderer(screen)
 if FULLSCREEN:
     screen = pygame.display.set_mode(RESOLUTION, pygame.FULLSCREEN)
+
 
 clock = pygame.time.Clock()
 pygame.event.set_grab(True) # locks cursor to game window
@@ -37,7 +40,8 @@ player.pos = 2,2
 while run:
     # Standard pygame update stuff
     clock.tick(FPS)
-    screen.fill((0,0,0))
+    renderer.draw_color = (0,0,0,255)
+    renderer.clear()
     if DEBUGMODE:
         print('fps: ' + str(clock.get_fps()))
 
@@ -46,7 +50,8 @@ while run:
     entityhandler.draw(drawnmap, maphandler)
 
     if CAMERA: # Displays map in the corner of the screen if camera is off, for debugging
-        camera.camerafy(drawnmap, screen, 1, player.dir ) # Draws the map, scaled and rotated
+        newsurface = camera.camerafy(drawnmap, renderer, 1.5, player.dir, player.pos) # Draws the map, scaled and rotated
+
     else:
         screen.blit(drawnmap, (0,0))
 
@@ -54,4 +59,5 @@ while run:
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             run = False
 
-    pygame.display.flip() # Update screen
+    renderer.present()
+    #pygame.display.flip() # Update screen

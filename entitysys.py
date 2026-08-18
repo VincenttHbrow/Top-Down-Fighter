@@ -34,7 +34,7 @@ class Entity():
     As it stands it just draws the player sprite, but will be used for more stuff in future. 
     '''
     def __init__(self, spritefile, pos = (0,0), dir = 0, ai = None, player = None):
-        self.sprite = pygame.image.load('sprites/' + spritefile + '.png').convert_alpha()
+        self.sprite = pygame.image.load('sprites/' + spritefile + '.png')
         self.animated = False # Just whether an object is a single frame or a spritesheet
         self.player = player # Player should be left empty UNLESS IT'S THE PLAYER CHARACTER
         self.ai = ai
@@ -96,6 +96,8 @@ class Entity():
             if self.player.currentanim != self.currentanim: # Resets animation frame to 0 when switching animations.
                 self.frame = -1
             self.currentanim = self.player.currentanim
+            if DEBUGMODE:
+                print ('player pos' + str(self.pos))
 
         
         # This is for animated entities switching frames if applicable, as well as counting occupied and invul. frames
@@ -136,7 +138,7 @@ class Entity():
                 
 
         # This is again just to make sure shit is rotated right
-        rotatedimg = pygame.transform.rotate(self.img, -self.dir).convert_alpha()
+        rotatedimg = pygame.transform.rotate(self.img, -self.dir)
         self.rect = rotatedimg.get_rect(center = ((self.pos[0] - maphandler.playertile[0] + maphandler.offset[0])*TILESIZE,\
                                                  (self.pos[1] - maphandler.playertile[1] + maphandler.offset[1])*TILESIZE))
 
@@ -144,7 +146,7 @@ class Entity():
             if self.weaponimg == None:
                 self.weaponimg = pygame.image.load(('weapons/' + self.weapon + '.png'))
             else:
-                rotatedweap = pygame.transform.rotate(self.weaponimg, -self.dir + 45).convert_alpha()
+                rotatedweap = pygame.transform.rotate(self.weaponimg, -self.dir + 45)
                 self.weaprect = rotatedweap.get_rect(center = ((self.pos[0] - maphandler.playertile[0] + maphandler.offset[0])*TILESIZE,\
                                                  (self.pos[1] - maphandler.playertile[1] + maphandler.offset[1])*TILESIZE))
                 self.weaprect = self.weaprect.move(m.cos(m.radians(self.dir))*WEAPONXOFFSET, m.sin(m.radians(self.dir))*WEAPONXOFFSET)
